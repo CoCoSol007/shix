@@ -2,6 +2,8 @@
 A shit programming language
 > ⚠️ I created this programming language to practice building a Chumsky parser in Rust. It is not intended for deployment.
 
+You can find some examples of Shix code [here](examples).
+
 ## Overview
 
 **Shix** is a lightweight stack-based scripting language designed for simple arithmetic, stack operations, and basic flow control using jump commands. This guide will walk you through the core syntax and features of Shix.
