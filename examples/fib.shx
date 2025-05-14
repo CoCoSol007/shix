@@ -1,0 +1,12 @@
+// Fibonacci sequence initializer
+push: 0
+push: 1
+
+// Fibonacci sequence main loop
+swap
+over: 1
+push: pop + pop 
+print: read
+
+// Fibonacci sequence loop until at least 1000
+jumpN: read - 1000, 2

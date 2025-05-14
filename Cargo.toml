@@ -1,0 +1,17 @@
+[package]
+name = "shix"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+chumsky = "0.10.1"
+
+
+[lints.rust]
+missing_docs = "warn"
+
+[lints.clippy]
+missing_docs_in_private_items = "warn"
+unwrap_in_result = "warn"
+unwrap_used = "warn"
+nursery = { level = "warn", priority = -1 }
