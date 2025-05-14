@@ -1,5 +1,6 @@
 # Shix
 A shit programming language
+> ⚠️ I created this programming language to practice building a Chumsky parser in Rust. It is not intended for deployment.
 
 ## Overview
 
