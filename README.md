@@ -4,6 +4,14 @@ A shit programming language
 
 You can find some examples of Shix code [here](examples).
 
+## Getting Started
+
+```bash
+git clone https://github.com/cocosol007/shix.git
+cd shix
+
+cargo build --release link/to/your/file.shix
+```
 ## Overview
 
 **Shix** is a lightweight stack-based scripting language designed for simple arithmetic, stack operations, and basic flow control using jump commands. This guide will walk you through the core syntax and features of Shix.
