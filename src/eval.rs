@@ -30,14 +30,14 @@ pub fn eval_statement(
             lock_stack.push_front(expr_value);
             Ok(())
         }
-        Statement::Jump(expression, jump) => match jump {
-            Jump::JumpZero(line) => eval_jump(|a| a == 0.0, stack, line, line_number, expression),
-            Jump::JumpNotZero(line) => {
-                eval_jump(|a| a != 0.0, stack, line, line_number, expression)
+        Statement::Jump{line, value, jump} => match jump {
+            Jump::JumpZero => eval_jump(|a| a == 0.0, stack, line, line_number, value),
+            Jump::JumpNotZero => {
+                eval_jump(|a| a != 0.0, stack, line, line_number, value)
             }
-            Jump::JumpNegate(line) => eval_jump(|a| a < 0.0, stack, line, line_number, expression),
-            Jump::JumpPositive(line) => {
-                eval_jump(|a| a > 0.0, stack, line, line_number, expression)
+            Jump::JumpNegate => eval_jump(|a| a < 0.0, stack, line, line_number, value),
+            Jump::JumpPositive => {
+                eval_jump(|a| a > 0.0, stack, line, line_number, value)
             }
         },
         Statement::Swap => {

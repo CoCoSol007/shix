@@ -177,7 +177,6 @@ pub fn parser_line<'src>() -> impl Parser<'src, &'src str, Statement> {
                 }
             });
 
-        
         let special_jump_operation = |jump: &'static str| {
             op(jump)
                 .then_ignore(just(":").map_err(move |e: EmptyErr| {
@@ -212,7 +211,11 @@ pub fn parser_line<'src>() -> impl Parser<'src, &'src str, Statement> {
                         ));
                     };
 
-                    Statement::Jump(condition, Jump::from_command(jump, line))
+                    Statement::Jump {
+                        line,
+                        value: condition,
+                        jump: Jump::from_command(jump),
+                    }
                 })
         };
 
@@ -226,7 +229,7 @@ pub fn parser_line<'src>() -> impl Parser<'src, &'src str, Statement> {
             special_jump_operation("jumpZ"),
             special_jump_operation("jumpNZ"),
             special_jump_operation("jumpN"),
-            special_jump_operation("jumpP")
+            special_jump_operation("jumpP"),
         ))
     })
 }

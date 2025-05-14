@@ -41,36 +41,36 @@ pub enum Expression {
 #[derive(Debug, Clone)]
 pub enum Jump {
     /// Jump to the line n if the element given is 0
-    JumpZero(Expression),
+    JumpZero,
 
     /// Jump to the line n if the element given is not 0
-    JumpNotZero(Expression),
+    JumpNotZero,
 
     /// Jump to the line n if the element given is < 0
-    JumpNegate(Expression),
+    JumpNegate,
 
     /// Jump to the line n if the element given is > 0
-    JumpPositive(Expression),
+    JumpPositive,
 }
 
 impl Jump {
     /// Get the command of the jump
     pub fn get_command(self) -> String {
         match self {
-            Self::JumpZero(_) => "jumpZ".to_string(),
-            Self::JumpNotZero(_) => "jumpNZ".to_string(),
-            Self::JumpNegate(_) => "jumpN".to_string(),
-            Self::JumpPositive(_) => "jumpP".to_string(),
+            Self::JumpZero => "jumpZ".to_string(),
+            Self::JumpNotZero => "jumpNZ".to_string(),
+            Self::JumpNegate => "jumpN".to_string(),
+            Self::JumpPositive => "jumpP".to_string(),
         }
     }
 
     /// Create a jump instruction from a command
-    pub fn from_command(command: &'static str, expr: Expression) -> Self {
+    pub fn from_command(command: &'static str) -> Self {
         match command {
-            "jumpZ" => Self::JumpZero(expr),
-            "jumpNZ" => Self::JumpNotZero(expr),
-            "jumpN" => Self::JumpNegate(expr),
-            "jumpP" => Self::JumpPositive(expr),
+            "jumpZ" => Self::JumpZero,
+            "jumpNZ" => Self::JumpNotZero,
+            "jumpN" => Self::JumpNegate,
+            "jumpP" => Self::JumpPositive,
             _ => panic!("Unknown command {command}"),
         }
     }
@@ -89,7 +89,16 @@ pub enum Statement {
     Print(Expression),
 
     /// A jump instruction
-    Jump(Expression, Jump),
+    Jump {
+        /// The line to jump
+        line: Expression,
+
+        /// The value to compare
+        value: Expression,
+
+        /// The jump instruction
+        jump: Jump,
+    },
 
     /// A swap instruction, swap the two values on top of the stack
     Swap,
