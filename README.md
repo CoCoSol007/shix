@@ -108,26 +108,16 @@ Shix includes several **conditional and unconditional jump** commands for contro
 
 > ⚠️ **Line Counting Note**: Only **executable lines** (excluding comments and blank lines) are counted when referencing line numbers for jumps.
 
-### ➤ `jump:<line>`
-
-Unconditionally jumps to a specified executable line.
-
-```shix
-jump:22
-print: 0       // This line is skipped
-print: 1       // This line is executed
-```
-
 ### ➤ `jumpZ:<value>, <line>`
 
 Jumps to a specified line **only if the value is zero**.
 
 ```shix
 push: 1
-jumpZ: read, 26    // Does not jump (1 ≠ 0)
+jumpZ: read, 23    // Does not jump (1 ≠ 0)
 
 push: pop - 1      // Stack: [0]
-jumpZ: read, 26    // Jumps (0 == 0)
+jumpZ: read, 23    // Jumps (0 == 0)
 ```
 
 ### ➤ `jumpNZ:<value>, <line>`
@@ -135,7 +125,7 @@ jumpZ: read, 26    // Jumps (0 == 0)
 Jumps if the value is **non-zero**.
 
 ```shix
-jumpNZ: read, 31   // Jumps if value ≠ 0
+jumpNZ: read, 29   // Jumps if value ≠ 0
 ```
 
 ### ➤ `jumpN:<value>, <line>`
@@ -144,7 +134,7 @@ Jumps if the value is **negative**.
 
 ```shix
 print: read
-jumpN: read, 35    // Jumps if value < 0
+jumpN: read, 32    // Jumps if value < 0
 ```
 
 ### ➤ `jumpP:<value>, <line>`
@@ -153,7 +143,7 @@ Jumps if the value is **positive**.
 
 ```shix
 print: read
-jumpP: read, 41    // Jumps if value > 0
+jumpP: read, 38    // Jumps if value > 0
 ```
 
 ---

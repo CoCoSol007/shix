@@ -40,9 +40,6 @@ pub enum Expression {
 /// A jump instruction
 #[derive(Debug, Clone)]
 pub enum Jump {
-    /// Jump to the line n of the program
-    Jump(Expression),
-
     /// Jump to the line n if the element given is 0
     JumpZero(Expression),
 
@@ -60,7 +57,6 @@ impl Jump {
     /// Get the command of the jump
     pub fn get_command(self) -> String {
         match self {
-            Self::Jump(_) => "jump".to_string(),
             Self::JumpZero(_) => "jumpZ".to_string(),
             Self::JumpNotZero(_) => "jumpNZ".to_string(),
             Self::JumpNegate(_) => "jumpN".to_string(),
@@ -71,7 +67,6 @@ impl Jump {
     /// Create a jump instruction from a command
     pub fn from_command(command: &'static str, expr: Expression) -> Self {
         match command {
-            "jump" => Self::Jump(expr),
             "jumpZ" => Self::JumpZero(expr),
             "jumpNZ" => Self::JumpNotZero(expr),
             "jumpN" => Self::JumpNegate(expr),

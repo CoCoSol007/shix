@@ -177,26 +177,7 @@ pub fn parser_line<'src>() -> impl Parser<'src, &'src str, Statement> {
                 }
             });
 
-        let simple_jump = just("jump")
-            .then_ignore(just(":").map_err(|e: EmptyErr| {
-                println!("Expected ':' after 'jump'");
-                e
-            }))
-            .padded()
-            .then(expr.clone().map_err(|e: EmptyErr| {
-                println!("Expected expression after ':'");
-                e
-            }))
-            .map(|(_push, line)| {
-                let Statement::Expression(line) = line else {
-                    return Statement::Expression(Expression::Error(
-                        "rhs is not an expression".to_string(),
-                    ));
-                };
-
-                Statement::Jump(Expression::Number(0.), Jump::Jump(line))
-            });
-
+        
         let special_jump_operation = |jump: &'static str| {
             op(jump)
                 .then_ignore(just(":").map_err(move |e: EmptyErr| {
@@ -242,11 +223,10 @@ pub fn parser_line<'src>() -> impl Parser<'src, &'src str, Statement> {
             swap_operation,
             clear_operation,
             over_operation,
-            simple_jump,
-            special_jump_operation("jumpN"),
-            special_jump_operation("jumpNZ"),
             special_jump_operation("jumpZ"),
-            special_jump_operation("jumpP"),
+            special_jump_operation("jumpNZ"),
+            special_jump_operation("jumpN"),
+            special_jump_operation("jumpP")
         ))
     })
 }

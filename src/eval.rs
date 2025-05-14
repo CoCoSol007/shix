@@ -31,7 +31,6 @@ pub fn eval_statement(
             Ok(())
         }
         Statement::Jump(expression, jump) => match jump {
-            Jump::Jump(line) => eval_jump(|_| true, stack, line, line_number, expression),
             Jump::JumpZero(line) => eval_jump(|a| a == 0.0, stack, line, line_number, expression),
             Jump::JumpNotZero(line) => {
                 eval_jump(|a| a != 0.0, stack, line, line_number, expression)
