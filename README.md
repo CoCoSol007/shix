@@ -62,6 +62,8 @@ push: 2        // Stack: [2, 1]
 Reads (peeks) the top value of the stack without removing it.
 
 ```shix
+push: 1        // Stack: [1]
+push: 2       // Stack: [2, 1]
 print: read    // 2
 ```
 
@@ -70,7 +72,10 @@ print: read    // 2
 Removes and returns the top value of the stack.
 
 ```shix
+push: 1        // Stack: [1]
+push: 2       // Stack: [2, 1]
 print: pop     // 2, Stack: [1]
+print: pop     // 1, Stack: []
 ```
 
 ### ➤ `swap`
@@ -78,9 +83,10 @@ print: pop     // 2, Stack: [1]
 Swaps the top two values of the stack.
 
 ```shix
-push: read     // Stack: [1, 1]
-push: pop + 1  // Stack: [2, 1]
-swap           // Stack: [1, 2]
+push: 1        // Stack: [1]
+push: 2       // Stack: [2, 1]
+push: pop + 1  // Stack: [3, 1]
+swap           // Stack: [1, 3]
 ```
 
 ### ➤ `over:<index>`
@@ -88,8 +94,10 @@ swap           // Stack: [1, 2]
 Duplicates the value at the specified stack index and pushes it to the top.
 
 ```shix
+push: 2       // Stack: [2]
+push: 1        // Stack: [1, 2]
 over: 0        // Duplicates top value — Stack: [1, 1, 2]
-over: 2        // Duplicates third value — Stack: [2, 1, 1, 2]
+over: 2        // Duplicates index 2 (third) value — Stack: [2, 1, 1, 2]
 ```
 
 ### ➤ `clear`
@@ -113,11 +121,9 @@ Shix includes several **conditional and unconditional jump** commands for contro
 Jumps to a specified line **only if the value is zero**.
 
 ```shix
-push: 1
-jumpZ: read, 23    // Does not jump (1 ≠ 0)
-
-push: pop - 1      // Stack: [0]
-jumpZ: read, 23    // Jumps (0 == 0)
+push: -1
+push: pop + 1
+jumpZ: read, 1    // jumps
 ```
 
 ### ➤ `jumpNZ:<value>, <line>`
@@ -125,7 +131,9 @@ jumpZ: read, 23    // Jumps (0 == 0)
 Jumps if the value is **non-zero**.
 
 ```shix
-jumpNZ: read, 29   // Jumps if value ≠ 0
+push: -1
+push: pop + 1
+jumpNZ: read, 1    // no jump
 ```
 
 ### ➤ `jumpN:<value>, <line>`
@@ -133,8 +141,9 @@ jumpNZ: read, 29   // Jumps if value ≠ 0
 Jumps if the value is **negative**.
 
 ```shix
-print: read
-jumpN: read, 32    // Jumps if value < 0
+push: -10
+push: pop + 1
+jumpN: read, 1    // jumps few times
 ```
 
 ### ➤ `jumpP:<value>, <line>`
@@ -142,8 +151,9 @@ jumpN: read, 32    // Jumps if value < 0
 Jumps if the value is **positive**.
 
 ```shix
-print: read
-jumpP: read, 38    // Jumps if value > 0
+push: 10
+push: pop - 1
+jumpP: read, 1    // jumps few times
 ```
 
 ---
