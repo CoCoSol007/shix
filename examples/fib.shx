@@ -1,6 +1,9 @@
 // Fibonacci sequence initializer
 push: 0 // [0]
+print: read // O
+
 push: 1 // [1, 0]
+print: read // 1
 
 // Fibonacci sequence main loop
 swap
@@ -9,4 +12,4 @@ push: pop + pop
 print: read
 
 // Fibonacci sequence loop until at least 1000
-jumpN: read - 1000, 2
+jumpN: read - 1000, 4

@@ -39,7 +39,7 @@ fn main() {
             match eval_statement(expr, &stack, &mut current_line) {
                 Ok(_) => (),
                 Err(eval_err) => {
-                    println!("Evaluation error: {eval_err} at line {}", current_line + 1);
+                    println!("Evaluation error: {eval_err} at line {current_line}");
                     break;
                 }
             }
