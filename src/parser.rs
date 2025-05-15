@@ -5,16 +5,8 @@ use chumsky::prelude::*;
 use crate::ast::*;
 
 /// The parser of the shix programming language
-pub fn parser<'src>() -> impl Parser<'src, &'src str, Vec<Line>> {
-    parser_line()
-        .map_with(|stmt, span| Line {
-            statement: stmt,
-            line_number: span.span().start,
-        })
-        .then_ignore(just("\n").or_not())
-        .repeated()
-        .collect()
-        .then_ignore(end())
+pub fn parser<'src>() -> impl Parser<'src, &'src str, Vec<Statement>> {
+    parser_line().repeated().collect().then_ignore(end())
 }
 
 /// The parser of a single line of the shix programming language
@@ -69,59 +61,43 @@ pub fn parser_line<'src>() -> impl Parser<'src, &'src str, Statement> {
             Statement::Expression(Expression::Negate(Box::new(expr_rhs)))
         });
 
-        let product =
-            unary.clone().foldl(
-                choice((
-                    op("*").to(Expression::Multiply
-                        as fn(_: Box<Expression>, _: Box<Expression>) -> Expression),
-                    op("/").to(Expression::Divide
-                        as fn(_: Box<Expression>, _: Box<Expression>) -> Expression),
-                    op("%").to(Expression::Modulo
-                        as fn(_: Box<Expression>, _: Box<Expression>) -> Expression),
-                ))
-                .then(unary.map_err(|e: EmptyErr| {
-                    println!("Expected an expression after the operator");
-                    e
-                }))
-                .repeated(),
-                |lhs, (op, rhs)| {
-                    let lhs_expr: Expression = match lhs {
-                        Statement::Expression(expression) => expression,
-                        _ => Expression::Error("lhs is not an expression".to_string()),
-                    };
-
-                    let rhs_expr: Expression = match rhs {
-                        Statement::Expression(expression) => expression,
-                        _ => Expression::Error("rhs is not an expression".to_string()),
-                    };
-
-                    Statement::Expression(op(Box::new(lhs_expr), Box::new(rhs_expr)))
-                },
-            );
+        let product = unary.clone().foldl(
+            choice((
+                op("*").to(Expression::Multiply as fn(_, _) -> _),
+                op("/").to(Expression::Divide as fn(_, _) -> _),
+                op("%").to(Expression::Modulo as fn(_, _) -> _),
+            ))
+            .then(unary)
+            .repeated(),
+            |lhs, (op, rhs)| {
+                let lhs_expr = match lhs {
+                    Statement::Expression(expr) => expr,
+                    _ => Expression::Error("lhs is not an expression".to_string()),
+                };
+                let rhs_expr = match rhs {
+                    Statement::Expression(expr) => expr,
+                    _ => Expression::Error("rhs is not an expression".to_string()),
+                };
+                Statement::Expression(op(Box::new(lhs_expr), Box::new(rhs_expr)))
+            },
+        );
 
         let sum = product.clone().foldl(
             choice((
-                op("+").to(Expression::Addition
-                    as fn(_: Box<Expression>, _: Box<Expression>) -> Expression),
-                op("-").to(Expression::Substract
-                    as fn(_: Box<Expression>, _: Box<Expression>) -> Expression),
+                op("+").to(Expression::Addition as fn(_, _) -> _),
+                op("-").to(Expression::Substract as fn(_, _) -> _),
             ))
-            .then(product.map_err(|e: EmptyErr| {
-                println!("Expected an expression after the operator");
-                e
-            }))
+            .then(product)
             .repeated(),
             |lhs, (op, rhs)| {
-                let lhs_expr: Expression = match lhs {
-                    Statement::Expression(expression) => expression,
+                let lhs_expr = match lhs {
+                    Statement::Expression(expr) => expr,
                     _ => Expression::Error("lhs is not an expression".to_string()),
                 };
-
-                let rhs_expr: Expression = match rhs {
-                    Statement::Expression(expression) => expression,
+                let rhs_expr = match rhs {
+                    Statement::Expression(expr) => expr,
                     _ => Expression::Error("rhs is not an expression".to_string()),
                 };
-
                 Statement::Expression(op(Box::new(lhs_expr), Box::new(rhs_expr)))
             },
         );
@@ -135,8 +111,8 @@ pub fn parser_line<'src>() -> impl Parser<'src, &'src str, Statement> {
                 println!("Expected expression after ':'");
                 e
             }))
-            .map(|(_push, expr)| match expr {
-                Statement::Expression(expression) => Statement::Push(expression),
+            .map(|(_, expr)| match expr {
+                Statement::Expression(expr) => Statement::Push(expr),
                 _ => {
                     Statement::Expression(Expression::Error("rhs is not an expression".to_string()))
                 }
@@ -151,8 +127,8 @@ pub fn parser_line<'src>() -> impl Parser<'src, &'src str, Statement> {
                 println!("Expected expression after ':'");
                 e
             }))
-            .map(|(_push, expr)| match expr {
-                Statement::Expression(expression) => Statement::Print(expression),
+            .map(|(_, expr)| match expr {
+                Statement::Expression(expr) => Statement::Print(expr),
                 _ => {
                     Statement::Expression(Expression::Error("rhs is not an expression".to_string()))
                 }
@@ -170,8 +146,8 @@ pub fn parser_line<'src>() -> impl Parser<'src, &'src str, Statement> {
                 println!("Expected expression after ':'");
                 e
             }))
-            .map(|(_push, expr)| match expr {
-                Statement::Expression(expression) => Statement::Over(expression),
+            .map(|(_, expr)| match expr {
+                Statement::Expression(expr) => Statement::Over(expr),
                 _ => {
                     Statement::Expression(Expression::Error("rhs is not an expression".to_string()))
                 }
@@ -210,16 +186,28 @@ pub fn parser_line<'src>() -> impl Parser<'src, &'src str, Statement> {
                             "rhs is not an expression".to_string(),
                         ));
                     };
-
+                    let jump_type = match jump {
+                        "jumpZ" => Jump::JumpZero,
+                        "jumpNZ" => Jump::JumpNotZero,
+                        "jumpN" => Jump::JumpNegate,
+                        "jumpP" => Jump::JumpPositive,
+                        _ => panic!("Unknown command {jump}"),
+                    };
                     Statement::Jump {
                         line,
                         value: condition,
-                        jump: Jump::from_command(jump),
+                        jump: jump_type,
                     }
                 })
         };
 
+        let comment = just("//")
+            .then(any().and_is(just('\n').not()).repeated())
+            .padded()
+            .to(Statement::None);
+
         choice((
+            comment,
             sum,
             push_operation,
             print_operation,

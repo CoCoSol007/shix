@@ -53,29 +53,6 @@ pub enum Jump {
     JumpPositive,
 }
 
-impl Jump {
-    /// Get the command of the jump
-    pub fn get_command(self) -> String {
-        match self {
-            Self::JumpZero => "jumpZ".to_string(),
-            Self::JumpNotZero => "jumpNZ".to_string(),
-            Self::JumpNegate => "jumpN".to_string(),
-            Self::JumpPositive => "jumpP".to_string(),
-        }
-    }
-
-    /// Create a jump instruction from a command
-    pub fn from_command(command: &'static str) -> Self {
-        match command {
-            "jumpZ" => Self::JumpZero,
-            "jumpNZ" => Self::JumpNotZero,
-            "jumpN" => Self::JumpNegate,
-            "jumpP" => Self::JumpPositive,
-            _ => panic!("Unknown command {command}"),
-        }
-    }
-}
-
 /// A statement, the main unit of the AST
 #[derive(Debug, Clone)]
 pub enum Statement {
@@ -109,6 +86,9 @@ pub enum Statement {
 
     /// Clear the stack
     Clear,
+
+    /// An empty line
+    None,
 }
 
 /// A line of the program

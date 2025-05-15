@@ -30,15 +30,11 @@ pub fn eval_statement(
             lock_stack.push_front(expr_value);
             Ok(())
         }
-        Statement::Jump{line, value, jump} => match jump {
+        Statement::Jump { line, value, jump } => match jump {
             Jump::JumpZero => eval_jump(|a| a == 0.0, stack, line, line_number, value),
-            Jump::JumpNotZero => {
-                eval_jump(|a| a != 0.0, stack, line, line_number, value)
-            }
+            Jump::JumpNotZero => eval_jump(|a| a != 0.0, stack, line, line_number, value),
             Jump::JumpNegate => eval_jump(|a| a < 0.0, stack, line, line_number, value),
-            Jump::JumpPositive => {
-                eval_jump(|a| a > 0.0, stack, line, line_number, value)
-            }
+            Jump::JumpPositive => eval_jump(|a| a > 0.0, stack, line, line_number, value),
         },
         Statement::Swap => {
             let Ok(mut lock_stack) = stack.write() else {
@@ -75,6 +71,10 @@ pub fn eval_statement(
                 return Err("Unable to write the stack".to_string());
             };
             lock_stack.clear();
+            Ok(())
+        }
+        Statement::None => {
+            println!("None");
             Ok(())
         }
     }

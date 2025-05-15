@@ -1,6 +1,6 @@
 // Fibonacci sequence initializer
-push: 0
-push: 1
+push: 0 // [0]
+push: 1 // [1, 0]
 
 // Fibonacci sequence main loop
 swap
