@@ -12,6 +12,14 @@ cd shix
 
 cargo build --release link/to/your/file.shix
 ```
+## ToDo
+
+- [x] AST 
+- [x] Eval statments
+- [x] Parser
+- [x] basic errors messages 
+- [ ] better errors messages with ariadne  
+
 ## Overview
 
 **Shix** is a lightweight stack-based scripting language designed for simple arithmetic, stack operations, and basic flow control using jump commands. This guide will walk you through the core syntax and features of Shix.
