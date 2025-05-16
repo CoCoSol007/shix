@@ -10,7 +10,7 @@ You can find some examples of Shix code [here](examples).
 git clone https://github.com/cocosol007/shix.git
 cd shix
 
-cargo build --release link/to/your/file.shix
+cargo run --release link/to/your/file.shix
 ```
 ## ToDo
 

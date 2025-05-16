@@ -12,4 +12,4 @@ push: pop + pop
 print: read
 
 // Fibonacci sequence loop until at least 1000
-jumpP: read, 4
+jumpN: read - 999, 4
