@@ -1,6 +1,7 @@
 //! The parser of the shix programming language
 
 use chumsky::prelude::*;
+use num_bigint::BigInt;
 
 use crate::ast::*;
 
@@ -13,7 +14,7 @@ pub fn parser<'src>() -> impl Parser<'src, &'src str, Vec<Statement>> {
 pub fn parser_line<'src>() -> impl Parser<'src, &'src str, Statement> {
     recursive(|expr| {
         let int = text::int(10).map(|str_number: &str| {
-            let Ok(number) = str_number.parse::<f64>() else {
+            let Ok(number) = str_number.parse::<BigInt>() else {
                 return Statement::Expression(Expression::Error(format!(
                     "Unable to parse the number : {str_number}"
                 )));
@@ -21,23 +22,7 @@ pub fn parser_line<'src>() -> impl Parser<'src, &'src str, Statement> {
             Statement::Expression(Expression::Number(number))
         });
 
-        let float = text::int(10)
-            .then_ignore(just("."))
-            .then(text::int(10).map_err(|e: EmptyErr| {
-                println!("Expected a number after the dot");
-                e
-            }))
-            .map(|(a, b): (&str, &str)| {
-                let Ok(number) = format!("{a}.{b}").parse::<f64>() else {
-                    return Statement::Expression(Expression::Error(format!(
-                        "Unable to parse the number : {a}.{b}"
-                    )));
-                };
-                Statement::Expression(Expression::Number(number))
-            });
-
-        let int_or_pop = float
-            .or(int)
+        let int_or_pop = int
             .or(just("pop").map(|_| Statement::Expression(Expression::Pop)))
             .or(just("read").map(|_| Statement::Expression(Expression::Read)));
 
@@ -64,8 +49,6 @@ pub fn parser_line<'src>() -> impl Parser<'src, &'src str, Statement> {
         let product = unary.clone().foldl(
             choice((
                 op("*").to(Expression::Multiply as fn(_, _) -> _),
-                op("/").to(Expression::Divide as fn(_, _) -> _),
-                op("%").to(Expression::Modulo as fn(_, _) -> _),
             ))
             .then(unary)
             .repeated(),

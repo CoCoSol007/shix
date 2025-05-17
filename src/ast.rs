@@ -1,12 +1,14 @@
 //! The abstract syntax tree of the shix programming language
 
+use num_bigint::BigInt;
+
 /// An expression that represents a number
 /// for example it could be :
 /// 5, -6, (1 + 2) * 3 or pop * 3
 #[derive(Debug, Clone)]
 pub enum Expression {
     /// The fundamental unit of a number
-    Number(f64),
+    Number(BigInt),
 
     /// The pop keyword, enable to get the value on top of
     /// the stack and remove it
@@ -26,12 +28,6 @@ pub enum Expression {
 
     /// The multiplication operator a * b
     Multiply(Box<Expression>, Box<Expression>),
-
-    /// The division operator a / b
-    Divide(Box<Expression>, Box<Expression>),
-
-    /// The modulo operator a % b
-    Modulo(Box<Expression>, Box<Expression>),
 
     /// An error
     Error(String),

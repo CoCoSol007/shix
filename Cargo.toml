@@ -5,6 +5,7 @@ edition = "2024"
 
 [dependencies]
 chumsky = "0.10.1"
+num-bigint = "0.4.6"
 
 
 [lints.rust]

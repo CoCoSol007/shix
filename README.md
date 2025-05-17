@@ -35,9 +35,7 @@ Shix supports basic mathematical expressions:
 ```shix
 1 + 2
 2 - 1
-2.5 * (7 + (-2))
-1 / 2 + 1
-70 % 4
+2 * (7 + (-2))
 ```
 
 To **evaluate and view** the result, use the `print:` keyword:
@@ -45,9 +43,7 @@ To **evaluate and view** the result, use the `print:` keyword:
 ```shix
 print: 1 + 2       // 3
 print: 2 - 1       // 1
-print: 2.5 * (7 + (-2)) // 12.5
-print: 1 / 2 + 1   // 1.5
-print: 70 % 4      // 2
+print: 2 * (7 + (-2)) // 10
 ```
 
 ---
