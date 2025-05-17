@@ -1,5 +1,20 @@
-# Shix
-A shit programming language
+<a id="readme-top"></a>
+<div align="center">
+
+</div>
+
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <img src="logo.svg" width="400">
+  <p align="center">
+    <br />
+    A shit programming language
+  </p>
+</div>
+
+---
+
 > ⚠️ I created this programming language to practice building a Chumsky parser in Rust. It is not intended for deployment.
 
 You can find some examples of Shix code [here](examples).
