@@ -71,6 +71,30 @@ pub fn eval_statement(
             }
             Err("Index out of bound".to_string())
         }
+        Statement::Del(expr) => {
+            let index =
+                usize::try_from(eval_expr(expr, stack)?.clone()).map_err(|e| e.to_string())?;
+            
+            let Ok(mut lock_stack) = stack.write() else {
+                return Err("Unable to write the stack".to_string());
+            };
+            
+            let mut save = LinkedList::new();
+
+            for (i,u) in lock_stack.clone().into_iter().enumerate() {
+                lock_stack.pop_front();
+                if i == index {
+                    break;
+                }
+                save.push_front(u);
+            }
+
+            for element in save.into_iter() {
+                lock_stack.push_front(element);
+            }
+
+            Ok(())
+        }
         Statement::Clear => {
             let Ok(mut lock_stack) = stack.write() else {
                 return Err("Unable to write the stack".to_string());

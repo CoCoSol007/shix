@@ -80,6 +80,10 @@ pub enum Statement {
     /// Not very memory efficient
     Over(Expression),
 
+    /// A delete instruction, delete the n value
+    /// Not very memory efficient
+    Del(Expression),
+
     /// Clear the stack
     Clear,
 

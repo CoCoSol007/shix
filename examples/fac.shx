@@ -4,7 +4,7 @@ push: 1
 push: 1000
 
 jumpNZ: read - 1, 4
-jumpZ: read - 1, 10
+jumpZ: read - 1, 11
 
 over: 0
 over: 2
@@ -12,7 +12,9 @@ push: pop * pop
 swap
 push: pop - 1
 
+del: 2
+
 jumpZ: 0, 2
 
 pop
-print: read
+print: pop

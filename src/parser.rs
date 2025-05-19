@@ -117,6 +117,22 @@ pub fn parser_line<'src>() -> impl Parser<'src, &'src str, Statement> {
                 }
             });
 
+        let del_operation = op("del")
+            .then_ignore(just(":").map_err(|e: EmptyErr| {
+                println!("Expected ':' after 'del'");
+                e
+            }))
+            .then(expr.clone().map_err(|e: EmptyErr| {
+                println!("Expected expression after ':'");
+                e
+            }))
+            .map(|(_, expr)| match expr {
+                Statement::Expression(expr) => Statement::Del(expr),
+                _ => {
+                    Statement::Expression(Expression::Error("rhs is not an expression".to_string()))
+                }
+            });
+
         let swap_operation = op("swap").to(Statement::Swap);
         let clear_operation = op("clear").to(Statement::Clear);
 
@@ -192,6 +208,7 @@ pub fn parser_line<'src>() -> impl Parser<'src, &'src str, Statement> {
         choice((
             comment,
             sum,
+            del_operation,
             push_operation,
             print_operation,
             swap_operation,
