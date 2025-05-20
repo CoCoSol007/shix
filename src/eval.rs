@@ -1,11 +1,11 @@
 //! The evaluator of the shix programming language
 
-use std::collections::LinkedList;
 use std::sync::RwLock;
 
 use num_bigint::BigInt;
 
 use crate::ast::*;
+use crate::linked_list::LinkedList;
 
 /// Evaluate a statement
 pub fn eval_statement(
@@ -29,7 +29,7 @@ pub fn eval_statement(
             let Ok(mut lock_stack) = stack.write() else {
                 return Err("Unable to write the stack".to_string());
             };
-            lock_stack.push_front(expr_value);
+            lock_stack.push(expr_value);
             Ok(())
         }
         Statement::Jump { line, value, jump } => match jump {
@@ -43,15 +43,15 @@ pub fn eval_statement(
                 return Err("Unable to write the stack".to_string());
             };
 
-            let Some(first) = lock_stack.pop_front() else {
+            let Some(first) = lock_stack.pop() else {
                 return Err("Stack is empty".to_string());
             };
-            let Some(second) = lock_stack.pop_front() else {
+            let Some(second) = lock_stack.pop() else {
                 return Err("Stack contains only one value".to_string());
             };
 
-            lock_stack.push_front(first);
-            lock_stack.push_front(second);
+            lock_stack.push(first);
+            lock_stack.push(second);
             Ok(())
         }
         Statement::Over(expr) => {
@@ -63,9 +63,9 @@ pub fn eval_statement(
             };
 
             let clone_stack = lock_stack.clone();
-            for (i, n) in clone_stack.iter().enumerate() {
+            for (i, n) in clone_stack.into_iter().enumerate() {
                 if i == index {
-                    lock_stack.push_front(n.clone());
+                    lock_stack.push(n.clone());
                     return Ok(());
                 }
             }
@@ -82,15 +82,15 @@ pub fn eval_statement(
             let mut save = LinkedList::new();
 
             for (i,u) in lock_stack.clone().into_iter().enumerate() {
-                lock_stack.pop_front();
+                lock_stack.pop();
                 if i == index {
                     break;
                 }
-                save.push_front(u);
+                save.push(u);
             }
 
             for element in save.into_iter() {
-                lock_stack.push_front(element);
+                lock_stack.push(element);
             }
 
             Ok(())
@@ -118,7 +118,7 @@ fn eval_expr(expr: &Expression, stack: &RwLock<LinkedList<BigInt>>) -> Result<Bi
                 return Err("Unable to write the stack".to_string());
             };
             lock_stack
-                .pop_front()
+                .pop()
                 .map_or_else(|| Err("Stack underflow".to_string()), Ok)
         }
         Expression::Addition(a, b) => Ok(eval_expr(a, stack)? + eval_expr(b, stack)?),
@@ -130,7 +130,7 @@ fn eval_expr(expr: &Expression, stack: &RwLock<LinkedList<BigInt>>) -> Result<Bi
                 return Err("Unable to write the stack".to_string());
             };
             read_stack
-                .front()
+                .read()
                 .map_or_else(|| Err("Stack underflow".to_string()), Ok)
                 .cloned()
         }

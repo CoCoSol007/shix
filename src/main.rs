@@ -3,8 +3,8 @@
 pub mod ast;
 pub mod eval;
 pub mod parser;
+pub mod linked_list;
 
-use std::collections::LinkedList;
 use std::sync::RwLock;
 use std::{env, fs};
 
@@ -12,6 +12,7 @@ use chumsky::Parser;
 
 use crate::eval::eval_statement;
 use crate::parser::parser;
+use crate::linked_list::LinkedList;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
